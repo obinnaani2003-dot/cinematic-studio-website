@@ -1,16 +1,19 @@
+import { RefObject } from 'react';
 import * as THREE from 'three';
 
-export interface TransformData {
-  originalPosition: [number, number, number];
-  originalRotation: [number, number, number];
-  originalScale: [number, number, number];
-  explodedPosition: [number, number, number];
-  explodedRotation: [number, number, number];
-  animationDelay: number;
-  assemblyOrder: number;
+export interface CameraParts {
+  bodyMain: RefObject<THREE.Group | null>;
+  bodySide: RefObject<THREE.Group | null>;
+  bodyBattery: RefObject<THREE.Group | null>;
+  lensMount: RefObject<THREE.Group | null>;
+  lensRings: RefObject<THREE.Group | null>;
+  lensFront: RefObject<THREE.Group | null>;
+  lensMatteBox: RefObject<THREE.Group | null>;
+  topHandle: RefObject<THREE.Group | null>;
+  topEVF: RefObject<THREE.Group | null>;
+  baseRods: RefObject<THREE.Group | null>;
 }
 
 export interface CameraPartProps {
-  transform?: TransformData;
-  groupRef?: React.Ref<THREE.Group>;
+  parts: CameraParts;
 }

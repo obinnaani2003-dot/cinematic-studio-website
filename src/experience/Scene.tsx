@@ -6,66 +6,54 @@ import * as THREE from "three";
 import { CinemaCamera } from "./camera/CinemaCamera";
 
 export default function Scene() {
-  const groupRef = useRef<THREE.Group>(null);
+  const floatRef = useRef<THREE.Group>(null);
   const { viewport } = useThree();
 
   const isMobile = viewport.width < 4;
-  const targetPosition = isMobile ? [0, 0.5, 0] : [0, 0, 0];
-  const targetScale = isMobile ? 0.6 : 1.0;
 
   useFrame((state) => {
     const t = state.clock.elapsedTime;
-    if (groupRef.current) {
-      groupRef.current.position.y = targetPosition[1] + Math.sin(t * 0.5) * 0.05;
-      groupRef.current.position.x = targetPosition[0];
-      groupRef.current.position.z = targetPosition[2];
-      groupRef.current.rotation.y = Math.sin(t * 0.2) * 0.05;
-      groupRef.current.scale.setScalar(targetScale);
+    if (floatRef.current) {
+      floatRef.current.position.y = Math.sin(t * 0.5) * 0.05;
+      floatRef.current.rotation.y = Math.sin(t * 0.2) * 0.05;
     }
   });
 
   return (
     <>
-      <ambientLight intensity={1.5} color="#ffffff" />
+      <ambientLight intensity={0.4} color="#ffffff" />
       
-      {/* Strong Cinematic Key Light (Warm) */}
+      {/* Large Soft Key (Warm) */}
       <directionalLight
-        position={[8, 5, 8]}
+        position={[10, 8, 5]}
+        intensity={5.0}
+        color="#fff0e0"
+      />
+      
+      {/* Controlled Cool Rim */}
+      <directionalLight
+        position={[-10, 5, -10]}
         intensity={6.0}
-        color="#ffebd6"
+        color="#d0e8ff"
       />
       
-      {/* Sharp Cool Rim Light for Edge Separation */}
+      {/* Subtle Warm Horizon Fill */}
       <directionalLight
-        position={[-8, 6, -8]}
-        intensity={8.0}
-        color="#d6e8ff"
+        position={[0, -5, 5]}
+        intensity={1.5}
+        color="#ffd0a0"
       />
       
-      {/* Strong Kicker to separate from dark background */}
+      {/* Kicker for metallic details */}
       <pointLight
-        position={[-3, -3, -4]}
-        intensity={4.0}
+        position={[-2, 2, -2]}
+        intensity={3.0}
         color="#ffffff"
-        distance={20}
+        distance={15}
       />
       
-      {/* Front Fill */}
-      <directionalLight
-        position={[0, 0, 8]}
-        intensity={2.5}
-        color="#ffffff"
-      />
-      
-      {/* Top light to highlight top handle and upper edges */}
-      <directionalLight
-        position={[0, 10, 0]}
-        intensity={4.0}
-        color="#ffffff"
-      />
-
-      <group ref={groupRef}>
-        <CinemaCamera />
+      <group ref={floatRef}>
+        <CinemaCamera isMobile={isMobile} />
       </group>
     </>
   );

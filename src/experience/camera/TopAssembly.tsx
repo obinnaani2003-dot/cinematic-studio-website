@@ -2,53 +2,62 @@
 
 import { materials } from "./materials";
 import { CameraPartProps } from "./types";
-import { useRef } from "react";
-import * as THREE from "three";
 
-export function TopAssembly({ transform, groupRef }: CameraPartProps) {
-  const localRef = useRef<THREE.Group>(null);
-  const ref = groupRef || localRef;
-
-  const pos = transform?.originalPosition || [0, 0.75, 0];
-  const rot = transform?.originalRotation || [0, 0, 0];
-  const scale = transform?.originalScale || [1, 1, 1];
-
+export function TopAssembly({ parts }: CameraPartProps) {
+  const { topHandle, topEVF } = parts;
   return (
-    <group position={pos} rotation={rot} scale={scale} ref={ref}>
-      {/* Top Handle Mount */}
-      <mesh position={[0, 0.05, 0.2]} material={materials.machinedMetal}>
-        <boxGeometry args={[0.3, 0.1, 0.4]} />
-      </mesh>
+    <>
+      <group ref={topHandle} position={[0, 0.75, 0]}>
+        {/* Cheese Plate Base */}
+        <mesh position={[0, 0.02, 0]} material={materials.machinedMetal}>
+          <boxGeometry args={[0.8, 0.04, 1.3]} />
+        </mesh>
+        
+        {/* Front Riser */}
+        <mesh position={[0, 0.25, 0.4]} material={materials.darkMetal}>
+          <boxGeometry args={[0.2, 0.4, 0.2]} />
+        </mesh>
 
-      {/* Top Handle Pillar Front */}
-      <mesh position={[0, 0.2, 0.3]} material={materials.charcoal}>
-        <boxGeometry args={[0.2, 0.3, 0.15]} />
-      </mesh>
+        {/* Back Riser */}
+        <mesh position={[0, 0.2, -0.4]} material={materials.darkMetal}>
+          <boxGeometry args={[0.2, 0.3, 0.2]} />
+        </mesh>
 
-      {/* Top Handle Pillar Back */}
-      <mesh position={[0, 0.2, -0.2]} material={materials.charcoal}>
-        <boxGeometry args={[0.2, 0.3, 0.15]} />
-      </mesh>
+        {/* Handle Grip */}
+        <mesh position={[0, 0.45, 0]} material={materials.rubber}>
+          <boxGeometry args={[0.25, 0.15, 1.2]} />
+        </mesh>
+        
+        {/* Front Cold Shoe */}
+        <mesh position={[0, 0.55, 0.5]} material={materials.machinedMetal}>
+          <boxGeometry args={[0.15, 0.05, 0.15]} />
+        </mesh>
+      </group>
 
-      {/* Top Handle Grip */}
-      <mesh position={[0, 0.4, 0.15]} material={materials.matteBlack}>
-        <boxGeometry args={[0.25, 0.15, 0.9]} />
-      </mesh>
+      <group ref={topEVF} position={[-0.5, 0.5, 0.2]}>
+        {/* EVF Mount Arm */}
+        <mesh position={[-0.2, 0, 0]} rotation={[0, 0, Math.PI / 2]} material={materials.machinedMetal}>
+          <cylinderGeometry args={[0.03, 0.03, 0.4, 16]} />
+        </mesh>
+        
+        {/* EVF Hinge */}
+        <mesh position={[-0.4, 0, 0]} rotation={[Math.PI / 2, 0, 0]} material={materials.darkMetal}>
+          <cylinderGeometry args={[0.08, 0.08, 0.1, 16]} />
+        </mesh>
 
-      {/* Viewfinder Mount */}
-      <mesh position={[-0.4, 0.1, 0.5]} material={materials.machinedMetal}>
-        <boxGeometry args={[0.4, 0.05, 0.1]} />
-      </mesh>
+        {/* EVF Tube */}
+        <mesh position={[-0.4, 0, -0.2]} rotation={[Math.PI / 2, 0, 0]} material={materials.anodizedBlack}>
+          <cylinderGeometry args={[0.15, 0.15, 0.5, 32]} />
+        </mesh>
 
-      {/* Viewfinder Tube */}
-      <mesh position={[-0.7, 0.15, 0.2]} material={materials.charcoal}>
-        <boxGeometry args={[0.2, 0.2, 0.6]} />
-      </mesh>
-
-      {/* Viewfinder Eyecup */}
-      <mesh position={[-0.7, 0.15, -0.15]} rotation={[Math.PI / 2, 0, 0]} material={materials.matteBlack}>
-        <cylinderGeometry args={[0.15, 0.1, 0.1, 32]} />
-      </mesh>
-    </group>
+        {/* Eyecup */}
+        <mesh position={[-0.4, 0, -0.45]} material={materials.rubber}>
+          <torusGeometry args={[0.12, 0.06, 16, 32]} />
+        </mesh>
+        <mesh position={[-0.4, 0, -0.45]} rotation={[Math.PI/2, 0, 0]} material={materials.darkGlass}>
+          <cylinderGeometry args={[0.1, 0.1, 0.02, 16]} />
+        </mesh>
+      </group>
+    </>
   );
 }
