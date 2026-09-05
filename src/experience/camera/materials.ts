@@ -2,24 +2,29 @@ import * as THREE from 'three';
 
 export const materials = {
   body: new THREE.MeshStandardMaterial({
-    color: '#1D2024', // ARRI Alexa 35 dark grey
-    roughness: 0.65,
-    metalness: 0.5,
+    color: '#1a1a1c',
+    roughness: 0.7,
+    metalness: 0.3,
   }),
   lensBody: new THREE.MeshStandardMaterial({
-    color: '#0A0B0C',
+    color: '#111111',
     roughness: 0.4,
-    metalness: 0.6,
+    metalness: 0.5,
   }),
   gearMetal: new THREE.MeshStandardMaterial({
-    color: '#050505',
-    roughness: 0.25,
-    metalness: 0.8,
+    color: '#0a0a0a',
+    roughness: 0.3,
+    metalness: 0.7,
   }),
   stainless: new THREE.MeshStandardMaterial({
-    color: '#E2E8F0',
-    roughness: 0.15,
-    metalness: 0.95,
+    color: '#d0d5dd',
+    roughness: 0.2,
+    metalness: 0.9,
+  }),
+  anodized: new THREE.MeshStandardMaterial({
+    color: '#0d0e10',
+    roughness: 0.25,
+    metalness: 0.9,
   }),
   arriBlue: new THREE.MeshStandardMaterial({
     color: '#0055AA',
@@ -27,15 +32,15 @@ export const materials = {
     metalness: 0.5,
   }),
   rubber: new THREE.MeshStandardMaterial({
-    color: '#111827',
-    roughness: 0.85,
-    metalness: 0.05,
+    color: '#111111',
+    roughness: 0.9,
+    metalness: 0.0,
   }),
   glass: new THREE.MeshPhysicalMaterial({
     color: '#ffffff',
     transmission: 0.98,
     ior: 1.52,
-    roughness: 0.02,
+    roughness: 0.01,
     clearcoat: 1.0,
     clearcoatRoughness: 0.02,
     transparent: true,
@@ -49,22 +54,22 @@ export const materials = {
   }),
   screen: new THREE.MeshStandardMaterial({
     color: '#000000',
-    roughness: 0.1,
-    metalness: 0.9,
+    roughness: 0.2,
+    metalness: 0.8,
   }),
   screenActive: new THREE.MeshStandardMaterial({
-    color: '#334455',
+    color: '#223344',
     roughness: 0.2,
-    emissive: '#112233',
-    emissiveIntensity: 0.5,
+    emissive: '#0a1a2a',
+    emissiveIntensity: 0.8,
   }),
   redAccent: new THREE.MeshStandardMaterial({
-    color: '#E02424',
+    color: '#b91c1c',
     roughness: 0.4,
-    metalness: 0.1,
+    metalness: 0.2,
   }),
   yellowMarking: new THREE.MeshStandardMaterial({
-    color: '#CCFF00', // Signature Prime neon yellow/green
+    color: '#bef264',
     roughness: 0.4,
     metalness: 0.1,
   }),
@@ -74,7 +79,7 @@ export const materials = {
     metalness: 0.1,
   }),
   goldContact: new THREE.MeshStandardMaterial({
-    color: '#FBBF24',
+    color: '#fbbf24',
     roughness: 0.2,
     metalness: 1.0,
   }),

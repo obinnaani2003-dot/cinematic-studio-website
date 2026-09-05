@@ -4,109 +4,93 @@ import { materials } from "./materials";
 import { CameraPartProps } from "./types";
 import { GearRing } from "./utils";
 
-
 export function LensAssembly({ parts }: CameraPartProps) {
   const { lensSystem, plMount, rearBarrel, irisGear, scaleRing, focusGear, frontBarrel, internalGlass, frontElement } = parts;
   return (
-    <group ref={lensSystem} position={[0, 0.05, 0.55]}>
+    <group ref={lensSystem} position={[0, 0.0, 0.43]}>
       
       {/* 1. PL Mount */}
       <group ref={plMount} position={[0, 0, 0]}>
-        {/* Base Block */}
         <mesh rotation={[Math.PI / 2, 0, 0]} material={materials.body}>
-          <cylinderGeometry args={[0.35, 0.35, 0.08, 64]} />
+          <cylinderGeometry args={[0.16, 0.16, 0.05, 64]} />
         </mesh>
-        
-        {/* Stainless PL Ring */}
-        <mesh position={[0, 0, 0.04]} rotation={[Math.PI / 2, 0, 0]} material={materials.stainless}>
-          <cylinderGeometry args={[0.36, 0.36, 0.04, 64]} />
+        <mesh position={[0, 0, 0.03]} rotation={[Math.PI / 2, 0, 0]} material={materials.stainless}>
+          <cylinderGeometry args={[0.17, 0.17, 0.02, 64]} />
         </mesh>
-        
-        {/* 4 PL Tabs */}
-        {Array.from({ length: 4 }).map((_, i) => (
-          <mesh key={`tab-${i}`} position={[Math.cos(i * Math.PI/2) * 0.38, Math.sin(i * Math.PI/2) * 0.38, 0.04]} rotation={[0, 0, -i * Math.PI/2]} material={materials.stainless}>
-            <boxGeometry args={[0.08, 0.12, 0.04]} />
-          </mesh>
-        ))}
-
-        {/* 2 Blue Locking Lever Ears (ARRI Signature) */}
-        <mesh position={[0.38, 0.1, 0.04]} rotation={[0, 0, -Math.PI/6]} material={materials.arriBlue}>
-          <boxGeometry args={[0.08, 0.2, 0.05]} />
+        {/* ARRI LPL Blue Levers */}
+        <mesh position={[0.17, 0.08, 0.03]} rotation={[0, 0, -Math.PI/6]} material={materials.arriBlue}>
+          <boxGeometry args={[0.03, 0.08, 0.02]} />
         </mesh>
-        <mesh position={[-0.38, -0.1, 0.04]} rotation={[0, 0, -Math.PI/6]} material={materials.arriBlue}>
-          <boxGeometry args={[0.08, 0.2, 0.05]} />
+        <mesh position={[-0.17, -0.08, 0.03]} rotation={[0, 0, -Math.PI/6]} material={materials.arriBlue}>
+          <boxGeometry args={[0.03, 0.08, 0.02]} />
         </mesh>
       </group>
 
       {/* 2. Rear Barrel */}
-      <group ref={rearBarrel} position={[0, 0, 0.16]}>
+      <group ref={rearBarrel} position={[0, 0, 0.08]}>
         <mesh rotation={[Math.PI / 2, 0, 0]} material={materials.lensBody}>
-          <cylinderGeometry args={[0.36, 0.32, 0.2, 64]} />
+          <cylinderGeometry args={[0.18, 0.16, 0.08, 64]} />
         </mesh>
       </group>
 
       {/* 3. Iris Gear */}
-      <group ref={irisGear} position={[0, 0, 0.3]}>
-        <GearRing radius={0.38} width={0.08} teethCount={140} material={materials.gearMetal} />
+      <group ref={irisGear} position={[0, 0, 0.14]}>
+        <GearRing radius={0.19} width={0.04} teethCount={120} material={materials.gearMetal} />
       </group>
 
       {/* 4. Scale Ring */}
-      <group ref={scaleRing} position={[0, 0, 0.5]}>
+      <group ref={scaleRing} position={[0, 0, 0.28]}>
         <mesh rotation={[Math.PI / 2, 0, 0]} material={materials.lensBody}>
-          <cylinderGeometry args={[0.40, 0.36, 0.32, 64]} />
+          <cylinderGeometry args={[0.20, 0.18, 0.24, 64]} />
         </mesh>
-        {/* ARRI Signature Prime Yellow text simulation */}
-        <mesh position={[0.39, 0.08, 0]} rotation={[Math.PI/4, 0, -Math.PI/2]} material={materials.yellowMarking}>
-          <boxGeometry args={[0.08, 0.005, 0.01]} />
+        <mesh position={[0.195, 0.04, 0]} rotation={[Math.PI/4, 0, -Math.PI/2]} material={materials.yellowMarking}>
+          <boxGeometry args={[0.05, 0.002, 0.01]} />
         </mesh>
-        <mesh position={[0.39, 0.12, 0]} rotation={[Math.PI/4, 0, -Math.PI/2]} material={materials.whiteMarking}>
-          <boxGeometry args={[0.04, 0.005, 0.01]} />
+        <mesh position={[0.195, 0.08, 0]} rotation={[Math.PI/4, 0, -Math.PI/2]} material={materials.whiteMarking}>
+          <boxGeometry args={[0.03, 0.002, 0.008]} />
         </mesh>
-        {/* Tick marks */}
-        {Array.from({ length: 20 }).map((_, i) => {
-          const angle = (i * Math.PI) / 10 - Math.PI;
+        {Array.from({ length: 16 }).map((_, i) => {
+          const angle = (i * Math.PI) / 8 - Math.PI;
           return (
-            <mesh key={`tick-y-${i}`} position={[Math.cos(angle) * 0.39, Math.sin(angle) * 0.39, -0.06]} rotation={[0, 0, angle]} material={materials.yellowMarking}>
-              <boxGeometry args={[0.004, 0.001, 0.04]} />
+            <mesh key={`tick-y-${i}`} position={[Math.cos(angle) * 0.198, Math.sin(angle) * 0.198, -0.05]} rotation={[0, 0, angle]} material={materials.yellowMarking}>
+              <boxGeometry args={[0.002, 0.001, 0.02]} />
             </mesh>
           );
         })}
       </group>
 
-      {/* 5. Focus Gear (Wider) */}
-      <group ref={focusGear} position={[0, 0, 0.75]}>
-        <GearRing radius={0.42} width={0.18} teethCount={180} material={materials.gearMetal} />
+      {/* 5. Focus Gear */}
+      <group ref={focusGear} position={[0, 0, 0.44]}>
+        <GearRing radius={0.21} width={0.08} teethCount={140} material={materials.gearMetal} />
       </group>
 
-      {/* 6. Front Barrel */}
-      <group ref={frontBarrel} position={[0, 0, 1.1]}>
+      {/* 6. Front Barrel (Flares out to 114mm equiv) */}
+      <group ref={frontBarrel} position={[0, 0, 0.62]}>
         <mesh rotation={[Math.PI / 2, 0, 0]} material={materials.lensBody}>
-          <cylinderGeometry args={[0.55, 0.40, 0.5, 64]} />
+          <cylinderGeometry args={[0.23, 0.20, 0.28, 64]} />
         </mesh>
-        {/* Front Ring Detail */}
-        <mesh position={[0, 0, 0.23]} rotation={[Math.PI / 2, 0, 0]} material={materials.stainless}>
-          <cylinderGeometry args={[0.55, 0.55, 0.04, 64]} />
+        <mesh position={[0, 0, 0.13]} rotation={[Math.PI / 2, 0, 0]} material={materials.stainless}>
+          <cylinderGeometry args={[0.23, 0.23, 0.02, 64]} />
         </mesh>
-        {/* Inner Dark Optical Housing */}
-        <mesh position={[0, 0, 0.1]} rotation={[Math.PI / 2, 0, 0]} material={materials.screen}>
-          <cylinderGeometry args={[0.52, 0.48, 0.3, 64]} />
+        <mesh position={[0, 0, 0.05]} rotation={[Math.PI / 2, 0, 0]} material={materials.screen}>
+          <cylinderGeometry args={[0.21, 0.19, 0.18, 64]} />
         </mesh>
       </group>
 
       {/* 7. Internal Optics */}
-      <group ref={internalGlass} position={[0, 0, 1.1]}>
+      <group ref={internalGlass} position={[0, 0, 0.6]}>
         <mesh rotation={[Math.PI / 2, 0, 0]} material={materials.glassCoating}>
-          <sphereGeometry args={[0.42, 48, 48, 0, Math.PI * 2, 0, Math.PI / 3]} />
+          <sphereGeometry args={[0.18, 32, 32, 0, Math.PI * 2, 0, Math.PI / 3]} />
         </mesh>
-        <mesh position={[0, 0, 0.1]} rotation={[Math.PI / 2, 0, 0]} material={materials.glassCoating}>
-          <cylinderGeometry args={[0.4, 0.4, 0.02, 32]} />
+        <mesh position={[0, 0, 0.05]} rotation={[Math.PI / 2, 0, 0]} material={materials.glassCoating}>
+          <cylinderGeometry args={[0.16, 0.16, 0.01, 32]} />
         </mesh>
       </group>
 
       {/* 8. Front Glass Element */}
-      <group ref={frontElement} position={[0, 0, 1.35]}>
+      <group ref={frontElement} position={[0, 0, 0.72]}>
         <mesh rotation={[Math.PI / 2, 0, 0]} material={materials.glass}>
-          <sphereGeometry args={[0.53, 64, 64, 0, Math.PI * 2, 0, Math.PI / 3.2]} />
+          <sphereGeometry args={[0.22, 64, 64, 0, Math.PI * 2, 0, Math.PI / 3.2]} />
         </mesh>
       </group>
 

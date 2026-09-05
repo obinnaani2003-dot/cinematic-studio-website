@@ -35,56 +35,41 @@ export function CinemaCamera({ isMobile }: { isMobile?: boolean }) {
   useEffect(() => {
     if (prefersReducedMotion() || typeof window === "undefined") return;
     const { gsap } = gsapWithScroll();
-    
     if (!masterRig.current) return;
 
     const ctx = gsap.context(() => {
-      // ----------------------------------------------------
-      // TARGET COORDINATES
-      // ----------------------------------------------------
-      // Initial large "Pop Out" composition
+      const masterRigEl = masterRig.current as THREE.Group;
+
       const startX = 0;
       const startY = -0.2;
-      const startZ = 0.5; // Start a bit back
+      const startZ = 0.5;
       const startScale = isMobile ? 0.6 : 1.1;
 
-      // Final receded composition
       const finalX = isMobile ? 0 : 2.2;
       const finalY = -0.4;
       const finalZ = -0.5;
       const finalScale = isMobile ? 0.45 : 0.85;
 
-      // Set initial positions instantly
-      gsap.set(masterRig.current, { x: startX, y: startY, z: startZ });
-      gsap.set((masterRig.current as any).rotation, { x: 0.15, y: -0.15, z: 0 });
-      gsap.set((masterRig.current as any).scale, { x: startScale, y: startScale, z: startScale });
+      gsap.set(masterRigEl.position, { x: startX, y: startY, z: startZ });
+      gsap.set(masterRigEl.rotation, { x: 0.15, y: -0.15, z: 0 });
+      gsap.set(masterRigEl.scale, { x: startScale, y: startScale, z: startScale });
 
-      // Create an automatic timeline attached to no scroll trigger
       const tl = gsap.timeline({ delay: 0.1 });
 
-      // ----------------------------------------------------
-      // 1. POP OUT (0.0s - 2.5s)
-      // ----------------------------------------------------
-      tl.to((masterRig.current as any).position, {
-        z: 2.5, // Move right in front of the viewer
+      tl.to(masterRigEl.position, {
+        z: 2.5,
         duration: 2.5,
         ease: "power2.out",
       }, 0);
-      tl.to((masterRig.current as any).rotation, {
+      tl.to(masterRigEl.rotation, {
         x: 0.1,
         y: -0.2,
         duration: 2.5,
         ease: "power2.out",
       }, 0);
 
-      // ----------------------------------------------------
-      // 2. HOLD (2.5s - 3.5s)
-      // ----------------------------------------------------
       tl.to({}, { duration: 1.0 }, 2.5);
 
-      // ----------------------------------------------------
-      // 3. DISASSEMBLE (3.5s - 6.5s)
-      // ----------------------------------------------------
       const explodeStart = 3.5;
       const explodeDuration = 3.0;
       
@@ -117,14 +102,8 @@ export function CinemaCamera({ isMobile }: { isMobile?: boolean }) {
         }, explodeStart);
       });
 
-      // ----------------------------------------------------
-      // 4. HOLD EXPLODED (6.5s - 7.5s)
-      // ----------------------------------------------------
       tl.to({}, { duration: 1.0 }, 6.5);
 
-      // ----------------------------------------------------
-      // 5. REASSEMBLE (7.5s - 10.5s)
-      // ----------------------------------------------------
       const reassembleStart = 7.5;
       const reassembleDuration = 3.0;
 
@@ -139,32 +118,26 @@ export function CinemaCamera({ isMobile }: { isMobile?: boolean }) {
         }, reassembleStart);
       });
 
-      // ----------------------------------------------------
-      // 6. HOLD ASSEMBLED (10.5s - 11.5s)
-      // ----------------------------------------------------
       tl.to({}, { duration: 1.0 }, 10.5);
 
-      // ----------------------------------------------------
-      // 7. RECEDE & POP IN TO BACKGROUND (11.5s - 14.0s)
-      // ----------------------------------------------------
       const recedeStart = 11.5;
       const recedeDuration = 2.5;
       
-      tl.to((masterRig.current as any).position, {
+      tl.to(masterRigEl.position, {
         x: finalX,
         y: finalY,
         z: finalZ,
         duration: recedeDuration,
         ease: "power2.inOut",
       }, recedeStart);
-      tl.to((masterRig.current as any).rotation, {
+      tl.to(masterRigEl.rotation, {
         x: 0.15,
         y: -0.35,
         z: 0,
         duration: recedeDuration,
         ease: "power2.inOut",
       }, recedeStart);
-      tl.to((masterRig.current as any).scale, {
+      tl.to(masterRigEl.scale, {
         x: finalScale,
         y: finalScale,
         z: finalScale,
