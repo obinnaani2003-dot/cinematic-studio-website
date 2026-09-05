@@ -1,3 +1,15 @@
+#!/bin/bash
+
+# Update CinemaCamera.tsx timings
+sed -i 's/const explodeDuration = 3.0;/const explodeDuration = 2.0;/g' src/experience/camera/CinemaCamera.tsx
+sed -i 's/tl.to({}, { duration: 1.0 }, 6.5);/tl.to({}, { duration: 0.8 }, 5.5);/g' src/experience/camera/CinemaCamera.tsx
+sed -i 's/const reassembleStart = 7.5;/const reassembleStart = 6.3;/g' src/experience/camera/CinemaCamera.tsx
+sed -i 's/const reassembleDuration = 3.0;/const reassembleDuration = 2.0;/g' src/experience/camera/CinemaCamera.tsx
+sed -i 's/tl.to({}, { duration: 1.0 }, 10.5);/tl.to({}, { duration: 1.0 }, 8.3);/g' src/experience/camera/CinemaCamera.tsx
+sed -i 's/const recedeStart = 11.5;/const recedeStart = 9.3;/g' src/experience/camera/CinemaCamera.tsx
+
+# Update Hero.tsx timings
+cat << 'INNEREOF' > src/components/sections/Hero.tsx
 "use client";
 
 import { useEffect, useRef } from "react";
@@ -135,3 +147,4 @@ export function Hero() {
     </section>
   );
 }
+INNEREOF

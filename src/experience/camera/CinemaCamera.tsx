@@ -71,7 +71,7 @@ export function CinemaCamera({ isMobile }: { isMobile?: boolean }) {
       tl.to({}, { duration: 1.0 }, 2.5);
 
       const explodeStart = 3.5;
-      const explodeDuration = 3.0;
+      const explodeDuration = 2.0;
       
       const explode = [
         { ref: parts.lensSystem, z: 0.5, y: 0, x: 0 },
@@ -102,10 +102,10 @@ export function CinemaCamera({ isMobile }: { isMobile?: boolean }) {
         }, explodeStart);
       });
 
-      tl.to({}, { duration: 1.0 }, 6.5);
+      tl.to({}, { duration: 0.8 }, 5.5);
 
-      const reassembleStart = 7.5;
-      const reassembleDuration = 3.0;
+      const reassembleStart = 6.3;
+      const reassembleDuration = 2.0;
 
       [...explode].reverse().forEach((comp) => {
         if (!comp.ref.current) return;
@@ -118,9 +118,9 @@ export function CinemaCamera({ isMobile }: { isMobile?: boolean }) {
         }, reassembleStart);
       });
 
-      tl.to({}, { duration: 1.0 }, 10.5);
+      tl.to({}, { duration: 1.0 }, 8.3);
 
-      const recedeStart = 11.5;
+      const recedeStart = 9.3;
       const recedeDuration = 2.5;
       
       tl.to(masterRigEl.position, {
