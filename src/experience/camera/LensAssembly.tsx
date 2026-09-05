@@ -2,70 +2,102 @@
 
 import { materials } from "./materials";
 import { CameraPartProps } from "./types";
+import { GearRing } from "./utils";
 
 export function LensAssembly({ parts }: CameraPartProps) {
-  const { lensMount, lensRings, lensFront, lensMatteBox } = parts;
+  const { lensMount, lensBarrel, lensFront, lensMatteBox } = parts;
   return (
     <>
-      <group ref={lensMount} position={[0, 0, 0.835]}>
+      <group ref={lensMount} position={[0, 0, 0.95]}>
+        {/* PL Mount Base */}
         <mesh rotation={[Math.PI / 2, 0, 0]} material={materials.machinedMetal}>
-          <cylinderGeometry args={[0.48, 0.48, 0.12, 32]} />
+          <cylinderGeometry args={[0.48, 0.48, 0.1, 32]} />
         </mesh>
-        <mesh position={[0, 0, 0.1]} rotation={[Math.PI / 2, 0, 0]} material={materials.darkMetal}>
-          <cylinderGeometry args={[0.42, 0.42, 0.08, 32]} />
+        {/* PL Locking Ring */}
+        <mesh position={[0, 0, 0.1]} rotation={[Math.PI / 2, 0, 0]} material={materials.machinedMetal}>
+          <cylinderGeometry args={[0.55, 0.55, 0.05, 32]} />
         </mesh>
+        {/* Locking Tabs */}
+        {Array.from({ length: 4 }).map((_, i) => (
+          <mesh key={`tab-${i}`} position={[Math.cos(i * Math.PI/2) * 0.58, Math.sin(i * Math.PI/2) * 0.58, 0.1]} rotation={[0, 0, -i * Math.PI/2]} material={materials.machinedMetal}>
+            <boxGeometry args={[0.1, 0.2, 0.05]} />
+          </mesh>
+        ))}
       </group>
 
-      <group ref={lensRings} position={[0, 0, 1.05]}>
+      <group ref={lensBarrel} position={[0, 0, 1.3]}>
         {/* Base Barrel */}
-        <mesh rotation={[Math.PI / 2, 0, 0]} material={materials.anodizedBlack}>
-          <cylinderGeometry args={[0.43, 0.43, 0.35, 32]} />
+        <mesh rotation={[Math.PI / 2, 0, 0]} material={materials.lensBarrel}>
+          <cylinderGeometry args={[0.42, 0.42, 0.5, 32]} />
         </mesh>
-        {/* Iris Ring */}
-        <mesh position={[0, 0, -0.1]} rotation={[Math.PI / 2, 0, 0]} material={materials.charcoal}>
-          <cylinderGeometry args={[0.45, 0.45, 0.08, 32]} />
-        </mesh>
-        {/* Focus Ring */}
-        <mesh position={[0, 0, 0.1]} rotation={[Math.PI / 2, 0, 0]} material={materials.charcoal}>
-          <cylinderGeometry args={[0.46, 0.46, 0.15, 32]} />
+        
+        {/* Iris Gear */}
+        <GearRing radius={0.46} width={0.08} teethCount={72} position={[0, 0, -0.15]} material={materials.darkMetal} />
+        
+        {/* Focus Gear */}
+        <GearRing radius={0.48} width={0.15} teethCount={80} position={[0, 0, 0.1]} material={materials.darkMetal} />
+
+        {/* Distance Markings Strip */}
+        <mesh position={[0, 0, 0.22]} rotation={[Math.PI / 2, 0, 0]} material={materials.bodyDark}>
+          <cylinderGeometry args={[0.43, 0.43, 0.05, 32]} />
         </mesh>
       </group>
 
-      <group ref={lensFront} position={[0, 0, 1.45]}>
-        {/* Front Flared Barrel */}
-        <mesh position={[0, 0, -0.1]} rotation={[Math.PI / 2, 0, 0]} material={materials.anodizedBlack}>
-          <cylinderGeometry args={[0.55, 0.43, 0.25, 32]} />
+      <group ref={lensFront} position={[0, 0, 1.75]}>
+        {/* Front Flare Barrel */}
+        <mesh position={[0, 0, -0.15]} rotation={[Math.PI / 2, 0, 0]} material={materials.lensBarrel}>
+          <cylinderGeometry args={[0.58, 0.42, 0.3, 32]} />
         </mesh>
-        {/* Front Edge */}
-        <mesh position={[0, 0, 0.04]} rotation={[Math.PI / 2, 0, 0]} material={materials.machinedMetal}>
-          <cylinderGeometry args={[0.56, 0.56, 0.04, 32]} />
+        {/* Front Ring */}
+        <mesh position={[0, 0, 0.05]} rotation={[Math.PI / 2, 0, 0]} material={materials.machinedMetal}>
+          <cylinderGeometry args={[0.6, 0.6, 0.1, 32]} />
         </mesh>
-        {/* Front Glass */}
-        <mesh position={[0, 0, -0.05]} rotation={[Math.PI / 2, 0, 0]} material={materials.darkGlass}>
-          <sphereGeometry args={[0.52, 32, 32, 0, Math.PI * 2, 0, Math.PI / 3.5]} />
+        
+        {/* Inner Threading */}
+        <mesh position={[0, 0, 0.05]} rotation={[Math.PI / 2, 0, 0]} material={materials.bodyDark}>
+          <cylinderGeometry args={[0.55, 0.55, 0.11, 32]} />
         </mesh>
-        {/* Inner Glass */}
-        <mesh position={[0, 0, -0.15]} rotation={[Math.PI / 2, 0, 0]} material={materials.lensCoating}>
+
+        {/* Front Glass Element (Convex) */}
+        <mesh position={[0, 0, -0.05]} rotation={[Math.PI / 2, 0, 0]} material={materials.glass}>
+          <sphereGeometry args={[0.54, 32, 32, 0, Math.PI * 2, 0, Math.PI / 3]} />
+        </mesh>
+        
+        {/* Second Glass Element (Concave) */}
+        <mesh position={[0, 0, -0.2]} rotation={[-Math.PI / 2, 0, 0]} material={materials.lensCoating}>
           <sphereGeometry args={[0.4, 32, 32, 0, Math.PI * 2, 0, Math.PI / 3]} />
         </mesh>
       </group>
 
-      <group ref={lensMatteBox} position={[0, 0, 1.8]}>
-        {/* Matte Box Hood */}
-        <mesh rotation={[Math.PI / 2, 0, Math.PI / 4]} material={materials.matteBlack}>
-          <cylinderGeometry args={[1.2, 0.7, 0.8, 4, 1, true]} />
+      <group ref={lensMatteBox} position={[0, 0, 2.15]}>
+        {/* Clamp Ring */}
+        <mesh position={[0, 0, -0.2]} rotation={[Math.PI / 2, 0, 0]} material={materials.machinedMetal}>
+          <cylinderGeometry args={[0.62, 0.62, 0.05, 32]} />
         </mesh>
-        {/* Matte Box Backplate */}
-        <mesh position={[0, 0, -0.4]} material={materials.matteBlack}>
-          <boxGeometry args={[1.0, 1.0, 0.05]} />
+
+        {/* Matte Box Main Body */}
+        <mesh material={materials.bodyMain}>
+          <boxGeometry args={[1.6, 1.2, 0.4]} />
         </mesh>
-        {/* Cutout hole for lens */}
-        <mesh position={[0, 0, -0.4]} rotation={[Math.PI/2, 0, 0]} material={materials.anodizedBlack}>
-           <cylinderGeometry args={[0.57, 0.57, 0.06, 32]} />
+        {/* Matte Box Hollow Cutout */}
+        <mesh material={materials.bodyDark}>
+          <boxGeometry args={[1.5, 1.1, 0.42]} />
         </mesh>
-        {/* Top Flag */}
-        <mesh position={[0, 0.9, 0.2]} rotation={[-Math.PI / 6, 0, 0]} material={materials.charcoal}>
-          <boxGeometry args={[1.6, 0.02, 0.9]} />
+        
+        {/* Top Flag (French Flag) */}
+        <mesh position={[0, 0.65, 0.2]} rotation={[-Math.PI / 5, 0, 0]} material={materials.bodyMain}>
+          <boxGeometry args={[1.8, 0.02, 1.0]} />
+        </mesh>
+        <mesh position={[0, 0.65, 0.2]} rotation={[-Math.PI / 5, 0, 0]} material={materials.bodyDark}>
+          <boxGeometry args={[1.78, 0.04, 0.98]} />
+        </mesh>
+
+        {/* Side Flags */}
+        <mesh position={[0.85, 0, 0.2]} rotation={[0, Math.PI / 6, 0]} material={materials.bodyMain}>
+          <boxGeometry args={[0.02, 1.1, 0.6]} />
+        </mesh>
+        <mesh position={[-0.85, 0, 0.2]} rotation={[0, -Math.PI / 6, 0]} material={materials.bodyMain}>
+          <boxGeometry args={[0.02, 1.1, 0.6]} />
         </mesh>
       </group>
     </>
