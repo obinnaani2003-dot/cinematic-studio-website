@@ -10,7 +10,7 @@ import { ExperienceCanvas } from "@/experience/ExperienceCanvas";
 
 const heroImage = {
   src: "/media/hero.jpg",
-  alt: "Placeholder cinematic film still — a lone figure on a dark desert plain at night with a faint warm horizon, to be replaced with studio footage",
+  alt: "Placeholder cinematic film still",
   width: 1600,
   height: 672,
 };
@@ -30,42 +30,33 @@ export function Hero() {
       
       // Initially hide the text
       gsap.set(contentRef.current, { autoAlpha: 0 });
-      gsap.set('[data-hero="scroll"]', { autoAlpha: 1 });
+      gsap.set('[data-hero="scroll"]', { autoAlpha: 0 });
 
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: root,
-          start: "top top",
-          end: "+=2000",
-          scrub: 0.8,
-          pin: true,
-          anticipatePin: 1,
-        },
-      });
+      // Create an automatic timeline attached to no scroll trigger
+      const tl = gsap.timeline({ delay: 0.1 });
 
-      // Camera does its thing from 0 to 13s on its own timeline.
-      // We'll reveal the text at the end of the scroll (e.g. from 11s to 13s)
-      tl.to({}, { duration: 11 }) // wait
-        .to(contentRef.current, { autoAlpha: 1, duration: 2 }, 11)
+      // The camera sequence will run from 0 to 14 seconds internally in CinemaCamera.
+      // We reveal the text right as the camera begins receding back (11.5s - 14.0s).
+      tl.to(contentRef.current, { autoAlpha: 1, duration: 2.0 }, 12.0)
         .fromTo(
           '[data-hero="title"]',
           { y: motionConfig.distances.revealLarge },
-          { y: 0, duration: 2, ease: "power2.out" },
-          11
+          { y: 0, duration: 2.0, ease: "power2.out" },
+          12.0
         )
         .fromTo(
           '[data-hero="line"]',
           { y: motionConfig.distances.reveal },
-          { y: 0, stagger: 0.2, duration: 1.5, ease: "power2.out" },
-          11.5
+          { y: 0, stagger: 0.15, duration: 1.5, ease: "power2.out" },
+          12.5
         )
         .fromTo(
           '[data-hero="actions"]',
           { y: 14 },
-          { y: 0, duration: 1, ease: "power2.out" },
-          12
+          { y: 0, duration: 1.5, ease: "power2.out" },
+          13.0
         )
-        .to('[data-hero="scroll"]', { autoAlpha: 0, duration: 1 }, 12);
+        .to('[data-hero="scroll"]', { autoAlpha: 1, duration: 1.5 }, 13.5);
 
     }, root);
 
@@ -94,7 +85,7 @@ export function Hero() {
 
       <ExperienceCanvas className="absolute inset-0 z-[1]" />
 
-      <div ref={contentRef} className="container-nf relative z-10 pb-32 pt-44">
+      <div ref={contentRef} className="container-nf relative z-10 pb-32 pt-44 invisible">
         <p data-hero="kicker" className="kicker">
           A Cinematic Studio
         </p>
@@ -133,7 +124,7 @@ export function Hero() {
 
       <div
         data-hero="scroll"
-        className="absolute bottom-8 left-1/2 z-10 flex -translate-x-1/2 flex-col items-center gap-3"
+        className="absolute bottom-8 left-1/2 z-10 flex -translate-x-1/2 flex-col items-center gap-3 invisible"
       >
         <span className="text-[10px] font-medium uppercase tracking-[0.32em] text-silver">
           Scroll

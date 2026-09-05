@@ -47,15 +47,14 @@ export function Screw({ position = [0,0,0], rotation = [0,0,0], material, scale 
         <cylinderGeometry args={[0.006, 0.006, 0.005, 6]} />
       </mesh>
     </group>
-  )
+  );
 }
 
-export function BeveledBox({ args = [1, 1, 1], bevel = 0.02, ...props }: { args?: [number, number, number], bevel?: number, [key: string]: unknown }) {
+export function BeveledBox({ args = [1, 1, 1], bevel = 0.02, material, ...props }: { args?: [number, number, number], bevel?: number, material?: THREE.Material, [key: string]: unknown }) {
   const shape = useMemo(() => {
     const s = new THREE.Shape();
     const w = args[0] / 2;
     const h = args[1] / 2;
-    // rounded corners
     const r = bevel;
     s.moveTo(-w + r, -h);
     s.lineTo(w - r, -h);
@@ -78,7 +77,6 @@ export function BeveledBox({ args = [1, 1, 1], bevel = 0.02, ...props }: { args?
     bevelThickness: bevel,
   }), [args, bevel]);
 
-  // Center the geometry on Z
   const geomRef = useRef<THREE.ExtrudeGeometry>(null);
   useEffect(() => {
     if (geomRef.current) {
@@ -87,7 +85,7 @@ export function BeveledBox({ args = [1, 1, 1], bevel = 0.02, ...props }: { args?
   }, []);
 
   return (
-    <mesh {...props}>
+    <mesh material={material} {...props}>
       <extrudeGeometry ref={geomRef} args={[shape, extrudeSettings]} />
     </mesh>
   );

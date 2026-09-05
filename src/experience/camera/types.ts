@@ -15,6 +15,7 @@ export interface CameraParts {
   frontBarrel: RefObject<THREE.Group | null>;
   internalGlass: RefObject<THREE.Group | null>;
   frontElement: RefObject<THREE.Group | null>;
+  matteBox: RefObject<THREE.Group | null>;
 }
 
 export interface CameraPartProps {

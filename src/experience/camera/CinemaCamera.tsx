@@ -13,7 +13,7 @@ import { prefersReducedMotion } from "@/animation/motionConfig";
 
 export function CinemaCamera({ isMobile }: { isMobile?: boolean }) {
   const groupRef = useRef<THREE.Group>(null);
-  const masterRigRef = useRef<THREE.Group>(null);
+  const masterRig = useRef<THREE.Group>(null);
   
   const parts: CameraParts = {
     cameraBrain: useRef<THREE.Group>(null),
@@ -29,63 +29,64 @@ export function CinemaCamera({ isMobile }: { isMobile?: boolean }) {
     frontBarrel: useRef<THREE.Group>(null),
     internalGlass: useRef<THREE.Group>(null),
     frontElement: useRef<THREE.Group>(null),
+    matteBox: useRef<THREE.Group>(null),
   };
 
   useEffect(() => {
     if (prefersReducedMotion() || typeof window === "undefined") return;
     const { gsap } = gsapWithScroll();
-    const heroSection = document.getElementById("top");
-    const masterRig = masterRigRef.current;
-    if (!heroSection || !masterRig) return;
+    
+    if (!masterRig.current) return;
 
     const ctx = gsap.context(() => {
-      // Composition End State (25-30% on right)
-      const finalX = isMobile ? 0 : 2.2;
-      const finalY = -0.4;
-      const finalZ = 0;
-      const finalScale = isMobile ? 0.5 : 0.85;
-
-      // Composition Start State (60-70% huge in center)
+      // ----------------------------------------------------
+      // TARGET COORDINATES
+      // ----------------------------------------------------
+      // Initial large "Pop Out" composition
       const startX = 0;
       const startY = -0.2;
-      const startZ = 2.0;
+      const startZ = 0.5; // Start a bit back
       const startScale = isMobile ? 0.6 : 1.1;
 
-      gsap.set(masterRig.position, { x: startX, y: startY, z: startZ });
-      gsap.set(masterRig.rotation, { x: 0.10, y: -0.15, z: 0 });
-      gsap.set(masterRig.scale, { x: startScale, y: startScale, z: startScale });
+      // Final receded composition
+      const finalX = isMobile ? 0 : 2.2;
+      const finalY = -0.4;
+      const finalZ = -0.5;
+      const finalScale = isMobile ? 0.45 : 0.85;
 
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: heroSection,
-          start: "top top",
-          end: "+=2000",
-          scrub: 0.8,
-        },
-      });
+      // Set initial positions instantly
+      gsap.set(masterRig.current, { x: startX, y: startY, z: startZ });
+      gsap.set((masterRig.current as any).rotation, { x: 0.15, y: -0.15, z: 0 });
+      gsap.set((masterRig.current as any).scale, { x: startScale, y: startScale, z: startScale });
 
-      // 0-2: POP OUT / ROTATE SLIGHTLY
-      tl.to(masterRig.position, {
-        x: startX,
-        y: startY,
-        z: startZ + 0.5,
-        duration: 2,
-        ease: "power1.inOut",
+      // Create an automatic timeline attached to no scroll trigger
+      const tl = gsap.timeline({ delay: 0.1 });
+
+      // ----------------------------------------------------
+      // 1. POP OUT (0.0s - 2.5s)
+      // ----------------------------------------------------
+      tl.to((masterRig.current as any).position, {
+        z: 2.5, // Move right in front of the viewer
+        duration: 2.5,
+        ease: "power2.out",
       }, 0);
-      tl.to(masterRig.rotation, {
-        x: 0.05,
-        y: -0.25,
-        z: 0,
-        duration: 2,
-        ease: "power1.inOut",
+      tl.to((masterRig.current as any).rotation, {
+        x: 0.1,
+        y: -0.2,
+        duration: 2.5,
+        ease: "power2.out",
       }, 0);
 
-      // 2-3: HOLD
-      tl.to({}, { duration: 1 }, 2);
+      // ----------------------------------------------------
+      // 2. HOLD (2.5s - 3.5s)
+      // ----------------------------------------------------
+      tl.to({}, { duration: 1.0 }, 2.5);
 
-      // 3-6: DISASSEMBLE
-      const explodeStart = 3;
-      const explodeDuration = 3;
+      // ----------------------------------------------------
+      // 3. DISASSEMBLE (3.5s - 6.5s)
+      // ----------------------------------------------------
+      const explodeStart = 3.5;
+      const explodeDuration = 3.0;
       
       const explode = [
         { ref: parts.lensSystem, z: 0.5, y: 0, x: 0 },
@@ -96,6 +97,7 @@ export function CinemaCamera({ isMobile }: { isMobile?: boolean }) {
         { ref: parts.scaleRing, z: 0.5, y: 0, x: 0 },
         { ref: parts.irisGear, z: 0.3, y: 0, x: 0 },
         { ref: parts.rearBarrel, z: 0.1, y: 0, x: 0 },
+        
         { ref: parts.baseSystem, z: 0, y: -0.8, x: 0 },
         { ref: parts.rearPower, z: -1.4, y: 0, x: 0 },
         { ref: parts.topRig, z: 0, y: 1.2, x: 0 },
@@ -115,12 +117,16 @@ export function CinemaCamera({ isMobile }: { isMobile?: boolean }) {
         }, explodeStart);
       });
 
-      // 6-7: HOLD EXPLODED
-      tl.to({}, { duration: 1 }, 6);
+      // ----------------------------------------------------
+      // 4. HOLD EXPLODED (6.5s - 7.5s)
+      // ----------------------------------------------------
+      tl.to({}, { duration: 1.0 }, 6.5);
 
-      // 7-10: REASSEMBLE
-      const reassembleStart = 7;
-      const reassembleDuration = 3;
+      // ----------------------------------------------------
+      // 5. REASSEMBLE (7.5s - 10.5s)
+      // ----------------------------------------------------
+      const reassembleStart = 7.5;
+      const reassembleDuration = 3.0;
 
       [...explode].reverse().forEach((comp) => {
         if (!comp.ref.current) return;
@@ -133,30 +139,36 @@ export function CinemaCamera({ isMobile }: { isMobile?: boolean }) {
         }, reassembleStart);
       });
 
-      // 10-11: HOLD ASSEMBLED
-      tl.to({}, { duration: 1 }, 10);
+      // ----------------------------------------------------
+      // 6. HOLD ASSEMBLED (10.5s - 11.5s)
+      // ----------------------------------------------------
+      tl.to({}, { duration: 1.0 }, 10.5);
 
-      // 11-13: RECEDE INTO BACKGROUND
-      const recedeStart = 11;
-      tl.to(masterRig.position, {
+      // ----------------------------------------------------
+      // 7. RECEDE & POP IN TO BACKGROUND (11.5s - 14.0s)
+      // ----------------------------------------------------
+      const recedeStart = 11.5;
+      const recedeDuration = 2.5;
+      
+      tl.to((masterRig.current as any).position, {
         x: finalX,
         y: finalY,
         z: finalZ,
-        duration: 2,
+        duration: recedeDuration,
         ease: "power2.inOut",
       }, recedeStart);
-      tl.to(masterRig.rotation, {
+      tl.to((masterRig.current as any).rotation, {
         x: 0.15,
         y: -0.35,
         z: 0,
-        duration: 2,
+        duration: recedeDuration,
         ease: "power2.inOut",
       }, recedeStart);
-      tl.to(masterRig.scale, {
+      tl.to((masterRig.current as any).scale, {
         x: finalScale,
         y: finalScale,
         z: finalScale,
-        duration: 2,
+        duration: recedeDuration,
         ease: "power2.inOut",
       }, recedeStart);
 
@@ -168,7 +180,7 @@ export function CinemaCamera({ isMobile }: { isMobile?: boolean }) {
 
   return (
     <group ref={groupRef}>
-      <group ref={masterRigRef}>
+      <group ref={masterRig}>
         <CameraBody parts={parts} />
         <LensAssembly parts={parts} />
         <TopRig parts={parts} />
