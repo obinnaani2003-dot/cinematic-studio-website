@@ -1,3 +1,5 @@
+import * as THREE from 'three';
+
 export interface TransformData {
   originalPosition: [number, number, number];
   originalRotation: [number, number, number];
@@ -10,4 +12,5 @@ export interface TransformData {
 
 export interface CameraPartProps {
   transform?: TransformData;
+  groupRef?: React.Ref<THREE.Group>;
 }

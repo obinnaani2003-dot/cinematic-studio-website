@@ -5,15 +5,16 @@ import { CameraPartProps } from "./types";
 import { useRef } from "react";
 import * as THREE from "three";
 
-export function LensAssembly({ transform }: CameraPartProps) {
-  const groupRef = useRef<THREE.Group>(null);
+export function LensAssembly({ transform, groupRef }: CameraPartProps) {
+  const localRef = useRef<THREE.Group>(null);
+  const ref = groupRef || localRef;
 
   const pos = transform?.originalPosition || [0, 0, 0.95];
   const rot = transform?.originalRotation || [0, 0, 0];
   const scale = transform?.originalScale || [1, 1, 1];
 
   return (
-    <group position={pos} rotation={rot} scale={scale} ref={groupRef}>
+    <group position={pos} rotation={rot} scale={scale} ref={ref}>
       {/* Lens Mount */}
       <mesh position={[0, 0, 0.05]} rotation={[Math.PI / 2, 0, 0]} material={materials.machinedMetal}>
         <cylinderGeometry args={[0.42, 0.42, 0.1, 32]} />
