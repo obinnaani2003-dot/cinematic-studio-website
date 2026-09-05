@@ -43,6 +43,8 @@ export const motionConfig = {
     revealStart: "top 86%",
     /** Scrub smoothness for scroll-linked tweens. */
     scrub: 0.6,
+    /** Camera reveal scrub smoothness. */
+    cameraScrub: 1,
   },
   breakpoints: {
     sm: 640,
