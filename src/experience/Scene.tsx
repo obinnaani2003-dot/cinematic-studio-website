@@ -15,39 +15,32 @@ export default function Scene() {
     const t = state.clock.elapsedTime;
     if (floatRef.current) {
       floatRef.current.position.y = Math.sin(t * 0.5) * 0.05;
-      floatRef.current.rotation.y = Math.sin(t * 0.2) * 0.05;
+      floatRef.current.rotation.y = Math.sin(t * 0.2) * 0.03;
     }
   });
 
   return (
     <>
-      <ambientLight intensity={0.4} color="#ffffff" />
+      <ambientLight intensity={0.35} color="#0f172a" />
       
-      {/* Large Soft Key (Warm) */}
+      {/* Warm Key */}
       <directionalLight
-        position={[10, 8, 5]}
-        intensity={5.0}
-        color="#fff0e0"
+        position={[5, 8, 5]}
+        intensity={3.2}
+        color="#fff7ed"
       />
       
-      {/* Controlled Cool Rim */}
+      {/* Cool Rim (Mandatory for edges) */}
       <directionalLight
-        position={[-10, 5, -10]}
-        intensity={6.0}
-        color="#d0e8ff"
+        position={[-6, -1, -4]}
+        intensity={6.5}
+        color="#e0f2fe"
       />
       
-      {/* Subtle Warm Horizon Fill */}
-      <directionalLight
-        position={[0, -5, 5]}
-        intensity={1.5}
-        color="#ffd0a0"
-      />
-      
-      {/* Kicker for metallic details */}
+      {/* Subtle fill to ensure shadows aren't pitch black */}
       <pointLight
-        position={[-2, 2, -2]}
-        intensity={3.0}
+        position={[2, 0, 5]}
+        intensity={1.0}
         color="#ffffff"
         distance={15}
       />

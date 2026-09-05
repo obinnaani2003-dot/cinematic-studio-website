@@ -9,7 +9,7 @@ import { RearAssembly } from "./RearAssembly";
 import { BaseAssembly } from "./BaseAssembly";
 import { CameraParts } from "./types";
 import { gsapWithScroll } from "@/lib/gsap";
-import { motionConfig, prefersReducedMotion } from "@/animation/motionConfig";
+import { prefersReducedMotion } from "@/animation/motionConfig";
 
 export function CinemaCamera({ isMobile }: { isMobile?: boolean }) {
   const groupRef = useRef<THREE.Group>(null);
@@ -41,59 +41,67 @@ export function CinemaCamera({ isMobile }: { isMobile?: boolean }) {
           trigger: heroSection,
           start: "top top",
           end: "bottom top",
-          scrub: motionConfig.scroll.cameraScrub,
+          scrub: 0.8, // specified damping
         },
       });
 
-      // Target layout coordinates from requirements
+      // Target layout coordinates
       const startX = isMobile ? 0 : 2.2;
-      const endX = isMobile ? 0 : 1.2;
-      const startScale = isMobile ? 0.45 : 0.85; // Mobile needs smaller scale for this detailed model
+      const endX = isMobile ? 0 : 1.5;
+      const startScale = isMobile ? 0.5 : 0.85;
 
       gsap.set(groupRef.current.position, { x: startX, y: -0.4, z: 0 });
       gsap.set(groupRef.current.rotation, { x: 0.15, y: -0.35, z: 0 });
       gsap.set(groupRef.current.scale, { x: startScale, y: startScale, z: startScale });
 
-      // Entire camera gentle global movement across the timeline
+      // Phase 2: Initial Movement (Subtle global forward/lateral drift)
       tl.to(groupRef.current.position, {
-        z: 1.0,
+        z: 0.5,
         x: endX,
-        y: -0.2,
+        y: -0.3,
         duration: 10,
         ease: "none",
       }, 0);
-
       tl.to(groupRef.current.rotation, {
-        y: -0.10,
-        x: 0.05,
+        y: -0.25,
+        x: 0.10,
         duration: 10,
         ease: "none",
       }, 0);
 
+      // Animation config
+      // Explosion sequence:
+      // Lens separates (z-axis)
+      // Top lifts (y-axis)
+      // Side/Battery pull back/out (x/z axes)
+      // Base drops (y-axis)
       const components = [
-        // Phase 3: Lens (z-axis, outward to camera front)
-        { ref: parts.lensMatteBox, outPos: [0, 0, 3.5], outRot: [0, 0, 0], tOut: 2.0, dOut: 1.5, tIn: 9.0, dIn: 1.0 },
-        { ref: parts.lensFront, outPos: [0, 0, 2.2], outRot: [0, 0, 0], tOut: 2.4, dOut: 1.5, tIn: 8.9, dIn: 0.9 },
-        { ref: parts.lensBarrel, outPos: [0, 0, 1.2], outRot: [0, 0, 0], tOut: 2.8, dOut: 1.5, tIn: 8.7, dIn: 1.0 },
-        { ref: parts.lensMount, outPos: [0, 0, 0.5], outRot: [0, 0, 0], tOut: 3.0, dOut: 1.5, tIn: 8.5, dIn: 1.0 },
+        // Camera Brain subtle drift
+        { ref: parts.bodyMain, outPos: [0, 0, 0.2], tOut: 2.0, dOut: 3.0, tIn: 7.0, dIn: 1.5 },
         
-        // Phase 4: Top Rig (y-axis, up)
-        { ref: parts.topHandle, outPos: [0, 1.5, 0], outRot: [0.1, 0, 0], tOut: 4.5, dOut: 1.5, tIn: 8.2, dIn: 1.0 },
-        { ref: parts.topEVF, outPos: [-1.4, 1.0, 0], outRot: [0, 0.2, -0.1], tOut: 4.7, dOut: 1.5, tIn: 8.0, dIn: 1.0 },
+        // Lens Assembly (Z-axis forward, staggered)
+        { ref: parts.lensMatteBox, outPos: [0, 0, 1.8], tOut: 2.2, dOut: 1.5, tIn: 7.0, dIn: 1.0 },
+        { ref: parts.lensFront, outPos: [0, 0, 1.2], tOut: 2.5, dOut: 1.5, tIn: 7.2, dIn: 1.0 },
+        { ref: parts.lensBarrel, outPos: [0, 0, 0.7], tOut: 2.8, dOut: 1.5, tIn: 7.4, dIn: 1.0 },
+        { ref: parts.lensMount, outPos: [0, 0, 0.3], tOut: 3.0, dOut: 1.5, tIn: 7.6, dIn: 1.0 },
         
-        // Phase 5: Side / Rear (x-axis / -z-axis)
-        { ref: parts.bodySide, outPos: [-1.2, 0, 0], outRot: [0, -0.4, 0], tOut: 4.8, dOut: 1.5, tIn: 8.0, dIn: 1.0 },
-        { ref: parts.rearBattery, outPos: [0, 0, -1.5], outRot: [0, -0.2, 0], tOut: 5.0, dOut: 1.5, tIn: 7.8, dIn: 1.0 },
+        // Top Rig (Y-axis upward)
+        { ref: parts.topHandle, outPos: [0, 1.2, 0], tOut: 4.0, dOut: 1.5, tIn: 6.5, dIn: 1.0 },
+        { ref: parts.topEVF, outPos: [0, 1.2, 0], outRot: [0, 0, 0.1], tOut: 4.2, dOut: 1.5, tIn: 6.3, dIn: 1.0 },
         
-        // Phase 6: Base (-y-axis)
-        { ref: parts.baseRods, outPos: [0, -1.2, 0], outRot: [0, 0, 0], tOut: 5.2, dOut: 1.5, tIn: 7.6, dIn: 1.0 },
+        // Side/Rear
+        { ref: parts.rearBattery, outPos: [0, 0, -1.4], tOut: 5.0, dOut: 1.5, tIn: 6.0, dIn: 1.0 },
+        { ref: parts.bodySide, outPos: [-0.8, 0, 0], tOut: 5.2, dOut: 1.5, tIn: 5.8, dIn: 1.0 },
+        
+        // Base (Y-axis downward)
+        { ref: parts.baseRods, outPos: [0, -0.8, 0], tOut: 5.5, dOut: 1.5, tIn: 5.5, dIn: 1.0 },
       ];
 
       components.forEach((comp) => {
         if (!comp.ref.current) return;
         const origPos = comp.ref.current.position.clone();
-        const origRot = comp.ref.current.rotation.clone();
-
+        
+        // Outward explosion
         tl.to(comp.ref.current.position, {
           x: origPos.x + comp.outPos[0],
           y: origPos.y + comp.outPos[1],
@@ -102,26 +110,31 @@ export function CinemaCamera({ isMobile }: { isMobile?: boolean }) {
           ease: "power2.inOut",
         }, comp.tOut);
 
-        tl.to(comp.ref.current.rotation, {
-          x: origRot.x + comp.outRot[0],
-          y: origRot.y + comp.outRot[1],
-          z: origRot.z + comp.outRot[2],
-          duration: comp.dOut,
-          ease: "power2.inOut",
-        }, comp.tOut);
+        if (comp.outRot) {
+          const origRot = comp.ref.current.rotation.clone();
+          tl.to(comp.ref.current.rotation, {
+            x: origRot.x + comp.outRot[0],
+            y: origRot.y + comp.outRot[1],
+            z: origRot.z + comp.outRot[2],
+            duration: comp.dOut,
+            ease: "power2.inOut",
+          }, comp.tOut);
+          
+          // Reverse rotation
+          tl.to(comp.ref.current.rotation, {
+            x: origRot.x,
+            y: origRot.y,
+            z: origRot.z,
+            duration: comp.dIn,
+            ease: "power2.inOut",
+          }, comp.tIn);
+        }
 
+        // Reassembly
         tl.to(comp.ref.current.position, {
           x: origPos.x,
           y: origPos.y,
           z: origPos.z,
-          duration: comp.dIn,
-          ease: "power2.inOut",
-        }, comp.tIn);
-
-        tl.to(comp.ref.current.rotation, {
-          x: origRot.x,
-          y: origRot.y,
-          z: origRot.z,
           duration: comp.dIn,
           ease: "power2.inOut",
         }, comp.tIn);

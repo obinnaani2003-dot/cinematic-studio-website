@@ -1,68 +1,68 @@
 import * as THREE from 'three';
 
 export const materials = {
-  bodyMain: new THREE.MeshStandardMaterial({
+  body: new THREE.MeshStandardMaterial({
+    color: '#1A1D20',
+    roughness: 0.42,
+    metalness: 0.78,
+  }),
+  anodized: new THREE.MeshStandardMaterial({
+    color: '#0D0E10',
+    roughness: 0.22,
+    metalness: 0.92,
+  }),
+  gear: new THREE.MeshStandardMaterial({
     color: '#111111',
-    roughness: 0.65,
-    metalness: 0.6,
+    roughness: 0.20,
+    metalness: 0.95,
   }),
-  bodyDark: new THREE.MeshStandardMaterial({
-    color: '#0a0a0a',
-    roughness: 0.8,
-    metalness: 0.4,
-  }),
-  machinedMetal: new THREE.MeshStandardMaterial({
-    color: '#666666',
-    roughness: 0.3,
-    metalness: 0.85,
-  }),
-  darkMetal: new THREE.MeshStandardMaterial({
-    color: '#222222',
-    roughness: 0.4,
-    metalness: 0.8,
-  }),
-  lensBarrel: new THREE.MeshStandardMaterial({
-    color: '#0f0f0f',
-    roughness: 0.5,
-    metalness: 0.7,
-  }),
-  rubber: new THREE.MeshStandardMaterial({
-    color: '#050505',
-    roughness: 0.95,
-    metalness: 0.05,
+  steel: new THREE.MeshStandardMaterial({
+    color: '#cccccc',
+    roughness: 0.15,
+    metalness: 0.95,
   }),
   glass: new THREE.MeshPhysicalMaterial({
     color: '#ffffff',
-    metalness: 0.1,
-    roughness: 0.05,
-    transmission: 0.95,
+    transmission: 0.96,
     ior: 1.52,
+    roughness: 0.03,
+    clearcoat: 1.0,
+    clearcoatRoughness: 0.05,
     transparent: true,
-    opacity: 1,
-    thickness: 0.5,
   }),
   lensCoating: new THREE.MeshPhysicalMaterial({
-    color: '#2a1a4a',
-    metalness: 0.2,
-    roughness: 0.1,
+    color: '#2a4a5a',
     transmission: 0.8,
-    transparent: true,
-    opacity: 0.9,
     ior: 1.4,
+    roughness: 0.1,
+    transparent: true,
+    opacity: 0.8,
+  }),
+  rubber: new THREE.MeshStandardMaterial({
+    color: '#080808',
+    roughness: 0.9,
+    metalness: 0.0,
   }),
   screen: new THREE.MeshStandardMaterial({
-    color: '#000000',
+    color: '#001111',
     roughness: 0.1,
     metalness: 0.9,
+    emissive: '#002233',
+    emissiveIntensity: 0.5,
   }),
   redAccent: new THREE.MeshStandardMaterial({
-    color: '#aa0000',
-    roughness: 0.4,
+    color: '#cc0000',
+    roughness: 0.3,
     metalness: 0.3,
   }),
   goldContact: new THREE.MeshStandardMaterial({
-    color: '#ddaa33',
-    roughness: 0.3,
+    color: '#d4af37',
+    roughness: 0.2,
     metalness: 1.0,
+  }),
+  markings: new THREE.MeshStandardMaterial({
+    color: '#ffffff',
+    roughness: 0.4,
+    metalness: 0.1,
   }),
 };
