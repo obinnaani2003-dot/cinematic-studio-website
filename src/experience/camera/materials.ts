@@ -21,6 +21,11 @@ export const materials = {
     roughness: 0.15,
     metalness: 0.98,
   }),
+  machined: new THREE.MeshStandardMaterial({
+    color: '#444444',
+    roughness: 0.20,
+    metalness: 0.95,
+  }),
   rubber: new THREE.MeshStandardMaterial({
     color: '#111827',
     roughness: 0.8,

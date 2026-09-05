@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useMemo } from 'react';
 import * as THREE from 'three';
 
 interface GearRingProps {
@@ -9,7 +9,7 @@ interface GearRingProps {
   material: THREE.Material;
 }
 
-export function GearRing({ radius, width, teethCount = 120, position = [0, 0, 0], material }: GearRingProps) {
+export function GearRing({ radius, width, teethCount = 140, position = [0, 0, 0], material }: GearRingProps) {
   const meshRef = useRef<THREE.InstancedMesh>(null);
   
   useEffect(() => {
@@ -31,7 +31,7 @@ export function GearRing({ radius, width, teethCount = 120, position = [0, 0, 0]
         <cylinderGeometry args={[radius - 0.005, radius - 0.005, width, 64]} />
       </mesh>
       <instancedMesh ref={meshRef} args={[undefined, undefined, teethCount]} material={material}>
-        <boxGeometry args={[0.015, width, 0.015]} />
+        <boxGeometry args={[0.012, width, 0.015]} />
       </instancedMesh>
     </group>
   );
@@ -41,11 +41,54 @@ export function Screw({ position = [0,0,0], rotation = [0,0,0], material, scale 
   return (
     <group position={position} rotation={rotation} scale={scale}>
       <mesh material={material}>
-        <cylinderGeometry args={[0.012, 0.012, 0.01, 12]} />
+        <cylinderGeometry args={[0.012, 0.012, 0.008, 12]} />
       </mesh>
-      <mesh position={[0, 0.006, 0]} material={material}>
+      <mesh position={[0, 0.004, 0]} material={material}>
         <cylinderGeometry args={[0.006, 0.006, 0.005, 6]} />
       </mesh>
     </group>
   )
+}
+
+export function BeveledBox({ args = [1, 1, 1], bevel = 0.02, ...props }: { args?: [number, number, number], bevel?: number, [key: string]: unknown }) {
+  const shape = useMemo(() => {
+    const s = new THREE.Shape();
+    const w = args[0] / 2;
+    const h = args[1] / 2;
+    // rounded corners
+    const r = bevel;
+    s.moveTo(-w + r, -h);
+    s.lineTo(w - r, -h);
+    s.quadraticCurveTo(w, -h, w, -h + r);
+    s.lineTo(w, h - r);
+    s.quadraticCurveTo(w, h, w - r, h);
+    s.lineTo(-w + r, h);
+    s.quadraticCurveTo(-w, h, -w, h - r);
+    s.lineTo(-w, -h + r);
+    s.quadraticCurveTo(-w, -h, -w + r, -h);
+    return s;
+  }, [args, bevel]);
+
+  const extrudeSettings = useMemo(() => ({
+    depth: args[2] - bevel * 2,
+    bevelEnabled: true,
+    bevelSegments: 3,
+    steps: 1,
+    bevelSize: bevel,
+    bevelThickness: bevel,
+  }), [args, bevel]);
+
+  // Center the geometry on Z
+  const geomRef = useRef<THREE.ExtrudeGeometry>(null);
+  useEffect(() => {
+    if (geomRef.current) {
+      geomRef.current.center();
+    }
+  }, []);
+
+  return (
+    <mesh {...props}>
+      <extrudeGeometry ref={geomRef} args={[shape, extrudeSettings]} />
+    </mesh>
+  );
 }

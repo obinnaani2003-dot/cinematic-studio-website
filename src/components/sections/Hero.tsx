@@ -17,13 +17,9 @@ const heroImage = {
 
 const disciplines = ["Cinematic Films", "Photography", "Visual Stories"];
 
-/**
- * Hero: full-screen cinematic still, WebGL placeholder layer, wordmark,
- * the three discipline lines, dual CTA and a subtle scroll indicator.
- * Entrance is a short GSAP timeline — nothing loops or bounces.
- */
 export function Hero() {
   const rootRef = useRef<HTMLElement>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const root = rootRef.current;
@@ -31,47 +27,46 @@ export function Hero() {
 
     const { gsap } = gsapWithScroll();
     const ctx = gsap.context(() => {
-      gsap
-        .timeline({
-          defaults: {
-            duration: motionConfig.durations.base,
-            ease: motionConfig.easings.out,
-          },
-        })
-        .fromTo(
-          '[data-hero="kicker"]',
-          { autoAlpha: 0 },
-          { autoAlpha: 1 },
-          0.2,
-        )
+      
+      // Initially hide the text
+      gsap.set(contentRef.current, { autoAlpha: 0 });
+      gsap.set('[data-hero="scroll"]', { autoAlpha: 1 });
+
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: root,
+          start: "top top",
+          end: "+=2000",
+          scrub: 0.8,
+          pin: true,
+          anticipatePin: 1,
+        },
+      });
+
+      // Camera does its thing from 0 to 13s on its own timeline.
+      // We'll reveal the text at the end of the scroll (e.g. from 11s to 13s)
+      tl.to({}, { duration: 11 }) // wait
+        .to(contentRef.current, { autoAlpha: 1, duration: 2 }, 11)
         .fromTo(
           '[data-hero="title"]',
-          { autoAlpha: 0, y: motionConfig.distances.revealLarge },
-          { autoAlpha: 1, y: 0, duration: motionConfig.durations.hero },
-          0.3,
+          { y: motionConfig.distances.revealLarge },
+          { y: 0, duration: 2, ease: "power2.out" },
+          11
         )
         .fromTo(
           '[data-hero="line"]',
-          { autoAlpha: 0, y: motionConfig.distances.reveal },
-          {
-            autoAlpha: 1,
-            y: 0,
-            stagger: motionConfig.stagger.items,
-          },
-          "-=0.65",
+          { y: motionConfig.distances.reveal },
+          { y: 0, stagger: 0.2, duration: 1.5, ease: "power2.out" },
+          11.5
         )
         .fromTo(
           '[data-hero="actions"]',
-          { autoAlpha: 0, y: 14 },
-          { autoAlpha: 1, y: 0 },
-          "-=0.5",
+          { y: 14 },
+          { y: 0, duration: 1, ease: "power2.out" },
+          12
         )
-        .fromTo(
-          '[data-hero="scroll"]',
-          { autoAlpha: 0 },
-          { autoAlpha: 1 },
-          "-=0.3",
-        );
+        .to('[data-hero="scroll"]', { autoAlpha: 0, duration: 1 }, 12);
+
     }, root);
 
     return () => ctx.revert();
@@ -84,7 +79,6 @@ export function Hero() {
       aria-label="Introduction"
       className="relative flex min-h-svh flex-col justify-end overflow-hidden"
     >
-      {/* Cinematic still — clearly a replaceable placeholder */}
       <div className="absolute inset-0" aria-hidden="true">
         <Image
           src={heroImage.src}
@@ -98,10 +92,9 @@ export function Hero() {
         <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/35 to-ink/60" />
       </div>
 
-      {/* WebGL placeholder layer (Build 0) — hidden for reduced motion */}
       <ExperienceCanvas className="absolute inset-0 z-[1]" />
 
-      <div className="container-nf relative z-10 pb-32 pt-44">
+      <div ref={contentRef} className="container-nf relative z-10 pb-32 pt-44">
         <p data-hero="kicker" className="kicker">
           A Cinematic Studio
         </p>
@@ -138,7 +131,6 @@ export function Hero() {
         </div>
       </div>
 
-      {/* Subtle scroll indicator */}
       <div
         data-hero="scroll"
         className="absolute bottom-8 left-1/2 z-10 flex -translate-x-1/2 flex-col items-center gap-3"
