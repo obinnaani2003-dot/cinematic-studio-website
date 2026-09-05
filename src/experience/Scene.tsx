@@ -32,33 +32,33 @@ export default function Scene() {
   return (
     <>
       {/* Cinematic Studio Lighting */}
-      <ambientLight intensity={0.2} color="#ffffff" />
+      <ambientLight intensity={0.5} color="#ffffff" />
       
       {/* Soft Warm Key Light */}
       <directionalLight
         position={[5, 5, 5]}
-        intensity={2.5}
+        intensity={4.0}
         color="#ffe8c4"
       />
       
       {/* Subtle Cool Rim Light */}
       <directionalLight
         position={[-5, 5, -5]}
-        intensity={3.0}
+        intensity={4.5}
         color="#c4dfff"
       />
       
       {/* Restrained Kicker */}
       <pointLight
         position={[-2, -2, -2]}
-        intensity={1.5}
+        intensity={2.5}
         color="#ffffff"
       />
       
       {/* Low Fill */}
       <directionalLight
         position={[0, 0, 5]}
-        intensity={0.5}
+        intensity={1.2}
         color="#ffffff"
       />
 

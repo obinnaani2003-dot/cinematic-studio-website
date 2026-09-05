@@ -78,9 +78,9 @@ export function CinemaCamera() {
         },
       });
 
-      // Initial state: Faint/subtle, pushed back and to the right
-      gsap.set(groupRef.current.position, { z: -4.5, x: 2.0, y: -0.2 });
-      gsap.set(groupRef.current.rotation, { x: 0.1, y: -Math.PI / 4, z: -0.05 });
+      // Initial state: Visibly on the right, but set back slightly to not overlap text
+      gsap.set(groupRef.current.position, { z: -2.5, x: 0.5, y: -0.1 });
+      gsap.set(groupRef.current.rotation, { x: 0.1, y: -Math.PI / 5, z: -0.05 });
 
       // Entire camera moves forward over the whole scroll distance (duration: 1)
       tl.to(

@@ -2,14 +2,14 @@ import * as THREE from 'three';
 
 export const materials = {
   matteBlack: new THREE.MeshStandardMaterial({
-    color: '#121212',
-    roughness: 0.85,
-    metalness: 0.2,
+    color: '#1a1a1a',
+    roughness: 0.8,
+    metalness: 0.25,
   }),
   charcoal: new THREE.MeshStandardMaterial({
-    color: '#1a1a1a',
-    roughness: 0.7,
-    metalness: 0.3,
+    color: '#262626',
+    roughness: 0.65,
+    metalness: 0.35,
   }),
   machinedMetal: new THREE.MeshStandardMaterial({
     color: '#555555',
