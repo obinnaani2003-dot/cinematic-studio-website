@@ -2,16 +2,19 @@ import { RefObject } from 'react';
 import * as THREE from 'three';
 
 export interface CameraParts {
-  bodyMain: RefObject<THREE.Group | null>;
-  bodySide: RefObject<THREE.Group | null>;
-  lensMount: RefObject<THREE.Group | null>;
-  lensBarrel: RefObject<THREE.Group | null>;
-  lensFront: RefObject<THREE.Group | null>;
-  lensMatteBox: RefObject<THREE.Group | null>;
-  topHandle: RefObject<THREE.Group | null>;
-  topEVF: RefObject<THREE.Group | null>;
-  rearBattery: RefObject<THREE.Group | null>;
-  baseRods: RefObject<THREE.Group | null>;
+  cameraBrain: RefObject<THREE.Group | null>;
+  baseSystem: RefObject<THREE.Group | null>;
+  topRig: RefObject<THREE.Group | null>;
+  rearPower: RefObject<THREE.Group | null>;
+  lensSystem: RefObject<THREE.Group | null>;
+  plMount: RefObject<THREE.Group | null>;
+  rearBarrel: RefObject<THREE.Group | null>;
+  irisGear: RefObject<THREE.Group | null>;
+  scaleRing: RefObject<THREE.Group | null>;
+  focusGear: RefObject<THREE.Group | null>;
+  frontBarrel: RefObject<THREE.Group | null>;
+  internalGlass: RefObject<THREE.Group | null>;
+  frontElement: RefObject<THREE.Group | null>;
 }
 
 export interface CameraPartProps {

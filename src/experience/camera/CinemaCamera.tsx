@@ -4,9 +4,9 @@ import { useEffect, useRef } from "react";
 import * as THREE from "three";
 import { CameraBody } from "./CameraBody";
 import { LensAssembly } from "./LensAssembly";
-import { TopAssembly } from "./TopAssembly";
-import { RearAssembly } from "./RearAssembly";
-import { BaseAssembly } from "./BaseAssembly";
+import { TopRig } from "./TopRig";
+import { RearPower } from "./RearPower";
+import { BaseSystem } from "./BaseSystem";
 import { CameraParts } from "./types";
 import { gsapWithScroll } from "@/lib/gsap";
 import { prefersReducedMotion } from "@/animation/motionConfig";
@@ -15,16 +15,19 @@ export function CinemaCamera({ isMobile }: { isMobile?: boolean }) {
   const groupRef = useRef<THREE.Group>(null);
   
   const parts: CameraParts = {
-    bodyMain: useRef<THREE.Group>(null),
-    bodySide: useRef<THREE.Group>(null),
-    lensMount: useRef<THREE.Group>(null),
-    lensBarrel: useRef<THREE.Group>(null),
-    lensFront: useRef<THREE.Group>(null),
-    lensMatteBox: useRef<THREE.Group>(null),
-    topHandle: useRef<THREE.Group>(null),
-    topEVF: useRef<THREE.Group>(null),
-    rearBattery: useRef<THREE.Group>(null),
-    baseRods: useRef<THREE.Group>(null),
+    cameraBrain: useRef<THREE.Group>(null),
+    baseSystem: useRef<THREE.Group>(null),
+    topRig: useRef<THREE.Group>(null),
+    rearPower: useRef<THREE.Group>(null),
+    lensSystem: useRef<THREE.Group>(null),
+    plMount: useRef<THREE.Group>(null),
+    rearBarrel: useRef<THREE.Group>(null),
+    irisGear: useRef<THREE.Group>(null),
+    scaleRing: useRef<THREE.Group>(null),
+    focusGear: useRef<THREE.Group>(null),
+    frontBarrel: useRef<THREE.Group>(null),
+    internalGlass: useRef<THREE.Group>(null),
+    frontElement: useRef<THREE.Group>(null),
   };
 
   useEffect(() => {
@@ -41,104 +44,74 @@ export function CinemaCamera({ isMobile }: { isMobile?: boolean }) {
           trigger: heroSection,
           start: "top top",
           end: "bottom top",
-          scrub: 0.8, // specified damping
+          scrub: 0.8,
         },
       });
 
       // Target layout coordinates
       const startX = isMobile ? 0 : 2.2;
-      const endX = isMobile ? 0 : 1.5;
-      const startScale = isMobile ? 0.5 : 0.85;
+      const endX = isMobile ? 0 : 1.2;
+      const startScale = isMobile ? 0.6 : 0.95;
 
       gsap.set(groupRef.current.position, { x: startX, y: -0.4, z: 0 });
       gsap.set(groupRef.current.rotation, { x: 0.15, y: -0.35, z: 0 });
       gsap.set(groupRef.current.scale, { x: startScale, y: startScale, z: startScale });
 
-      // Phase 2: Initial Movement (Subtle global forward/lateral drift)
+      // Entire camera gentle global movement
       tl.to(groupRef.current.position, {
         z: 0.5,
         x: endX,
-        y: -0.3,
-        duration: 10,
-        ease: "none",
-      }, 0);
-      tl.to(groupRef.current.rotation, {
-        y: -0.25,
-        x: 0.10,
+        y: -0.2,
         duration: 10,
         ease: "none",
       }, 0);
 
-      // Animation config
-      // Explosion sequence:
-      // Lens separates (z-axis)
-      // Top lifts (y-axis)
-      // Side/Battery pull back/out (x/z axes)
-      // Base drops (y-axis)
-      const components = [
-        // Camera Brain subtle drift
-        { ref: parts.bodyMain, outPos: [0, 0, 0.2], tOut: 2.0, dOut: 3.0, tIn: 7.0, dIn: 1.5 },
+      tl.to(groupRef.current.rotation, {
+        y: -0.15,
+        x: 0.05,
+        duration: 10,
+        ease: "none",
+      }, 0);
+
+      const explode = [
+        { ref: parts.cameraBrain, z: 0.2, y: 0, x: 0, outT: 2.0, d: 2, inT: 6.0 },
+        { ref: parts.baseSystem, z: 0, y: -0.8, x: 0, outT: 2.0, d: 2, inT: 6.0 },
+        { ref: parts.rearPower, z: -1.4, y: 0, x: 0, outT: 2.5, d: 2, inT: 5.5 },
+        { ref: parts.topRig, z: 0, y: 1.2, x: 0, outT: 3.0, d: 2, inT: 5.0 },
         
-        // Lens Assembly (Z-axis forward, staggered)
-        { ref: parts.lensMatteBox, outPos: [0, 0, 1.8], tOut: 2.2, dOut: 1.5, tIn: 7.0, dIn: 1.0 },
-        { ref: parts.lensFront, outPos: [0, 0, 1.2], tOut: 2.5, dOut: 1.5, tIn: 7.2, dIn: 1.0 },
-        { ref: parts.lensBarrel, outPos: [0, 0, 0.7], tOut: 2.8, dOut: 1.5, tIn: 7.4, dIn: 1.0 },
-        { ref: parts.lensMount, outPos: [0, 0, 0.3], tOut: 3.0, dOut: 1.5, tIn: 7.6, dIn: 1.0 },
+        // Lens parts relative to lensSystem
+        { ref: parts.lensSystem, z: 0.5, y: 0, x: 0, outT: 3.5, d: 2, inT: 4.5 },
         
-        // Top Rig (Y-axis upward)
-        { ref: parts.topHandle, outPos: [0, 1.2, 0], tOut: 4.0, dOut: 1.5, tIn: 6.5, dIn: 1.0 },
-        { ref: parts.topEVF, outPos: [0, 1.2, 0], outRot: [0, 0, 0.1], tOut: 4.2, dOut: 1.5, tIn: 6.3, dIn: 1.0 },
-        
-        // Side/Rear
-        { ref: parts.rearBattery, outPos: [0, 0, -1.4], tOut: 5.0, dOut: 1.5, tIn: 6.0, dIn: 1.0 },
-        { ref: parts.bodySide, outPos: [-0.8, 0, 0], tOut: 5.2, dOut: 1.5, tIn: 5.8, dIn: 1.0 },
-        
-        // Base (Y-axis downward)
-        { ref: parts.baseRods, outPos: [0, -0.8, 0], tOut: 5.5, dOut: 1.5, tIn: 5.5, dIn: 1.0 },
+        { ref: parts.frontElement, z: 1.8, y: 0, x: 0, outT: 3.8, d: 2, inT: 4.2 },
+        { ref: parts.internalGlass, z: 1.4, y: 0, x: 0, outT: 3.9, d: 2, inT: 4.3 },
+        { ref: parts.frontBarrel, z: 1.0, y: 0, x: 0, outT: 4.0, d: 2, inT: 4.4 },
+        { ref: parts.focusGear, z: 0.7, y: 0, x: 0, outT: 4.1, d: 2, inT: 4.5 },
+        { ref: parts.scaleRing, z: 0.5, y: 0, x: 0, outT: 4.2, d: 2, inT: 4.6 },
+        { ref: parts.irisGear, z: 0.3, y: 0, x: 0, outT: 4.3, d: 2, inT: 4.7 },
+        { ref: parts.rearBarrel, z: 0.1, y: 0, x: 0, outT: 4.4, d: 2, inT: 4.8 },
       ];
 
-      components.forEach((comp) => {
+      explode.forEach((comp) => {
         if (!comp.ref.current) return;
-        const origPos = comp.ref.current.position.clone();
+        const orig = comp.ref.current.position.clone();
         
-        // Outward explosion
         tl.to(comp.ref.current.position, {
-          x: origPos.x + comp.outPos[0],
-          y: origPos.y + comp.outPos[1],
-          z: origPos.z + comp.outPos[2],
-          duration: comp.dOut,
-          ease: "power2.inOut",
-        }, comp.tOut);
+          x: orig.x + comp.x,
+          y: orig.y + comp.y,
+          z: orig.z + comp.z,
+          duration: comp.d,
+          ease: "power3.out",
+        }, comp.outT);
 
-        if (comp.outRot) {
-          const origRot = comp.ref.current.rotation.clone();
-          tl.to(comp.ref.current.rotation, {
-            x: origRot.x + comp.outRot[0],
-            y: origRot.y + comp.outRot[1],
-            z: origRot.z + comp.outRot[2],
-            duration: comp.dOut,
-            ease: "power2.inOut",
-          }, comp.tOut);
-          
-          // Reverse rotation
-          tl.to(comp.ref.current.rotation, {
-            x: origRot.x,
-            y: origRot.y,
-            z: origRot.z,
-            duration: comp.dIn,
-            ease: "power2.inOut",
-          }, comp.tIn);
-        }
-
-        // Reassembly
         tl.to(comp.ref.current.position, {
-          x: origPos.x,
-          y: origPos.y,
-          z: origPos.z,
-          duration: comp.dIn,
+          x: orig.x,
+          y: orig.y,
+          z: orig.z,
+          duration: comp.d,
           ease: "power2.inOut",
-        }, comp.tIn);
+        }, comp.inT);
       });
+
     }, groupRef);
 
     return () => ctx.revert();
@@ -149,9 +122,9 @@ export function CinemaCamera({ isMobile }: { isMobile?: boolean }) {
     <group ref={groupRef}>
       <CameraBody parts={parts} />
       <LensAssembly parts={parts} />
-      <TopAssembly parts={parts} />
-      <RearAssembly parts={parts} />
-      <BaseAssembly parts={parts} />
+      <TopRig parts={parts} />
+      <RearPower parts={parts} />
+      <BaseSystem parts={parts} />
     </group>
   );
 }

@@ -31,7 +31,7 @@ export function GearRing({ radius, width, teethCount = 120, position = [0, 0, 0]
         <cylinderGeometry args={[radius - 0.005, radius - 0.005, width, 64]} />
       </mesh>
       <instancedMesh ref={meshRef} args={[undefined, undefined, teethCount]} material={material}>
-        <boxGeometry args={[0.015, width, 0.02]} />
+        <boxGeometry args={[0.015, width, 0.015]} />
       </instancedMesh>
     </group>
   );
@@ -41,10 +41,10 @@ export function Screw({ position = [0,0,0], rotation = [0,0,0], material, scale 
   return (
     <group position={position} rotation={rotation} scale={scale}>
       <mesh material={material}>
-        <cylinderGeometry args={[0.015, 0.015, 0.01, 12]} />
+        <cylinderGeometry args={[0.012, 0.012, 0.01, 12]} />
       </mesh>
       <mesh position={[0, 0.006, 0]} material={material}>
-        <cylinderGeometry args={[0.008, 0.008, 0.005, 6]} />
+        <cylinderGeometry args={[0.006, 0.006, 0.005, 6]} />
       </mesh>
     </group>
   )
