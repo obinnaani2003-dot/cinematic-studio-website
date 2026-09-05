@@ -9,21 +9,16 @@ export default function Scene() {
   const groupRef = useRef<THREE.Group>(null);
   const { viewport } = useThree();
 
-  // On very narrow screens (mobile), move the camera closer to the center
-  // and scale it down slightly so it fits.
   const isMobile = viewport.width < 4;
-  const targetPosition = isMobile ? [0, 1.0, 0] : [1.7, 0.35, 0];
-  const targetScale = isMobile ? 0.7 : 1.0;
+  const targetPosition = isMobile ? [0, 0.5, 0] : [0, 0, 0];
+  const targetScale = isMobile ? 0.6 : 1.0;
 
-  // Subtle floating animation for the hero object
   useFrame((state) => {
     const t = state.clock.elapsedTime;
     if (groupRef.current) {
-      // Subtle float
       groupRef.current.position.y = targetPosition[1] + Math.sin(t * 0.5) * 0.05;
       groupRef.current.position.x = targetPosition[0];
       groupRef.current.position.z = targetPosition[2];
-      // Subtle rotation
       groupRef.current.rotation.y = Math.sin(t * 0.2) * 0.05;
       groupRef.current.scale.setScalar(targetScale);
     }
@@ -31,34 +26,41 @@ export default function Scene() {
 
   return (
     <>
-      {/* Cinematic Studio Lighting */}
-      <ambientLight intensity={0.5} color="#ffffff" />
+      <ambientLight intensity={1.5} color="#ffffff" />
       
-      {/* Soft Warm Key Light */}
+      {/* Strong Cinematic Key Light (Warm) */}
       <directionalLight
-        position={[5, 5, 5]}
-        intensity={4.0}
-        color="#ffe8c4"
+        position={[8, 5, 8]}
+        intensity={6.0}
+        color="#ffebd6"
       />
       
-      {/* Subtle Cool Rim Light */}
+      {/* Sharp Cool Rim Light for Edge Separation */}
       <directionalLight
-        position={[-5, 5, -5]}
-        intensity={4.5}
-        color="#c4dfff"
+        position={[-8, 6, -8]}
+        intensity={8.0}
+        color="#d6e8ff"
       />
       
-      {/* Restrained Kicker */}
+      {/* Strong Kicker to separate from dark background */}
       <pointLight
-        position={[-2, -2, -2]}
+        position={[-3, -3, -4]}
+        intensity={4.0}
+        color="#ffffff"
+        distance={20}
+      />
+      
+      {/* Front Fill */}
+      <directionalLight
+        position={[0, 0, 8]}
         intensity={2.5}
         color="#ffffff"
       />
       
-      {/* Low Fill */}
+      {/* Top light to highlight top handle and upper edges */}
       <directionalLight
-        position={[0, 0, 5]}
-        intensity={1.2}
+        position={[0, 10, 0]}
+        intensity={4.0}
         color="#ffffff"
       />
 

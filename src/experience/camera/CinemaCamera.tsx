@@ -78,16 +78,17 @@ export function CinemaCamera() {
         },
       });
 
-      // Initial state: Visibly on the right, but set back slightly to not overlap text
-      gsap.set(groupRef.current.position, { z: -2.5, x: 0.5, y: -0.1 });
+      // Initial state: Visibly on the right, scaled up, avoiding text
+      gsap.set(groupRef.current.position, { z: -1.5, x: 2.0, y: -0.2 });
       gsap.set(groupRef.current.rotation, { x: 0.1, y: -Math.PI / 5, z: -0.05 });
+      gsap.set(groupRef.current.scale, { x: 1.15, y: 1.15, z: 1.15 });
 
       // Entire camera moves forward over the whole scroll distance (duration: 1)
       tl.to(
         groupRef.current.position,
         {
-          z: 0.5,
-          x: 0.2,
+          z: 1.0,
+          x: 1.0,
           y: 0,
           duration: 1,
           ease: motionConfig.easings.inOut,

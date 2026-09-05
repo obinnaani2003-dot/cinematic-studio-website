@@ -93,13 +93,13 @@ export function Hero() {
           height={heroImage.height}
           priority
           sizes="100vw"
-          className="h-full w-full object-cover object-center"
+          className="h-full w-full object-cover object-[20%_80%]"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/35 to-ink/60" />
       </div>
 
       {/* WebGL placeholder layer (Build 0) — hidden for reduced motion */}
-      <ExperienceCanvas className="absolute inset-0 z-[1] opacity-70 mix-blend-screen" />
+      <ExperienceCanvas className="absolute inset-0 z-[1]" />
 
       <div className="container-nf relative z-10 pb-32 pt-44">
         <p data-hero="kicker" className="kicker">
@@ -134,9 +134,6 @@ export function Hero() {
         >
           <CtaLink href="#work" variant="solid">
             Explore Our Work
-          </CtaLink>
-          <CtaLink href={site.cta.href} variant="ghost">
-            Start a Project
           </CtaLink>
         </div>
       </div>
